@@ -1,10 +1,12 @@
 <?php // Mitchell Bennis (mitch@elementengage.com)
-// Version 1.1 -- Rev 12.15.23
+// Version 1.2 -- Rev 12.15.23
 // PHP 8.3 Approved
 	
 	// Sanitize Form and $_REQUEST Inputs
 	// Returns FALSE if sanitization occurred.
-	function eeSanitizeInput($eeInput, $eeType = 'text') { // text, email, url, num, float, ip
+	function eeSanitizeInput($eeInput, $eeType = 'text', $eeAllowTags = FALSE) {
+		
+		// $eeType = text, email, url, num, float, ip
 		
 		if(empty($eeInput)) { return FALSE; }
 		
@@ -42,12 +44,14 @@
 			default:
 				// Sanitize text
 				if(strlen($eeInput)) {
+					if($eeAllowTags === FALSE) { $eeInput = strip_tags($eeInput); }
 					$eeInput = htmlspecialchars($eeInput, ENT_QUOTES, 'UTF-8');
 				}
 				break;
 		}
 		
 		if($eeInput == $eeOutput) {
+			$eeInput = preg_replace('/\s\s+/', ' ', $eeInput); // Remove Multiple Spaces
 			return trim($eeOutput);
 		}
 		
